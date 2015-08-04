@@ -20,18 +20,15 @@ if (Meteor.isClient) {
     }
   });
   
-    Template.body.events({
+  Template.body.events({
     "submit .new-task": function (event) {
-      // Prevent default browser form submit
       event.preventDefault();
-      
-      // Get value from form element
       var text = event.target.text.value;
-
-      // Insert a task into the collection
       Tasks.insert({
         text: text,
-        createdAt: new Date() // current time
+        createdAt: new Date(),            // current time
+        owner: Meteor.userId(),           // _id of logged in user
+        username: Meteor.user().username  // username of logged in user
       });
       // Clear form
       event.target.text.value = "";
@@ -51,7 +48,10 @@ if (Meteor.isClient) {
     "click .delete": function () {
       Tasks.remove(this._id);
     }
-
+  });
+  
+  Accounts.ui.config({
+    passwordSignupFields: "USERNAME_ONLY"
   });
   
 }
